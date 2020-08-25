@@ -1,22 +1,38 @@
 import { Head, Image, Notes, Footer, themes } from 'mdx-deck';
+import { CodeSurfer } from "code-surfer"
 import marvel from "./images/marvel.png";
 import nyt from "./images/nyt.png"; 
 import report from "./images/report.png"; 
 import pet from "./images/pet.png"; 
 import pet_store from "./images/pet_store.png"; 
 import generators from "./images/generators.png"; 
+import openapi from "./images/openapi.png";
+import apiformat from "./images/apiformat.png"; 
+import { github } from "@code-surfer/themes"
+import "prismjs/components/prism-ruby"
+import error_1 from "./images/error_1.png";
+import error_2 from "./images/error_2.png";
+import error_3 from "./images/error_3.png";
+import error_4 from "./images/error_4.png";
+import error_5 from "./images/error_5.png";
+import error_6 from "./images/error_6.png";
+import success_1 from "./images/success_1.png";
+import success_2 from "./images/success_2.png";
+import swagger_ui_1 from "./images/swagger_ui_1.png";
+import swagger_1 from "./images/swagger_1.png"; 
+import { CodeSurferColumns, Step } from "code-surfer";
 
-export const theme = themes.code
+export const theme = themes.yellow
 
 # RSwag Workshop
 
 ---
-
+ 
 # Paulo Fernandes
 
 Engenheiro de Software @CESAR
 
-[@pernambucano](https://github.com/pernambucano)
+[@pernambucano](https://github.com/pernambucano) 
 
 ---
 
@@ -25,30 +41,33 @@ Engenheiro de Software @CESAR
 ---
 
 # Por que documentar sua API?
+
 ---
 
-# Usuários querem
+# Hoje
 
 <ul> 
   <Steps>
-    <li>Entender os endpoints</li>
-    <li>Ter a versão mais atualizada</li>
-    <li>Testar</li>
+    <li>Difícil de Usar</li>
+    <li>Difícil de Entender</li>
+    <li>Difícil de Manter/Atualizar</li>
+    <li>Difícil de Entregar</li>
+    <li>Difícil de Padronizar</li>
   </Steps>
 </ul>
 
 --- 
 
-# Devs querem
-<ul>
-<Steps>
-  <li>Entender os endpoints</li>
-  <li>Testar Integrações</li>
-  <li>Paralelizar Front/Back</li>
-  <li>Ter uma única especificação</li>
-  <li>Organizar todas as versões</li>
-  <li>Padronizar REST Client</li>
-</Steps> 
+# Amanhã
+
+<ul> 
+  <Steps> 
+    <li>Documentação simples e fácil de acessar</li>
+    <li>Padrão usado por maioria das ferramentas de API</li> 
+    <li>Fácil padronização entre endpoints</li> 
+    <li>Testes de request mais legíveis</li>
+    <li>Documentação sempre atualizada</li> 
+  </Steps>
 </ul>
 
 --- 
@@ -57,55 +76,575 @@ Engenheiro de Software @CESAR
 
 ---
 
-# O que é ?
+### Overview [1]
 
+<Image src={openapi} width="120vw" size="contain"  /> 
+
+---
+
+# O que é ? 
 
 <ul>
-<Steps>
-  <li>Padronização e centralização da documentação</li>
-  <li>Ferramentas de automação</li> 
-</Steps> 
-</ul>
+  <Steps>
+    <li>Padronização e centralização da documentação</li>
+    <li>Ferramentas de automação</li> 
+  </Steps> 
+</ul> 
 
 ---
-## Swagger UI
+### Swagger Spec [2]
+  
+<Image src={apiformat} width="120vw" size="contain" /> 
 
-<Image src={pet} width="80vw" size="contain" />
+--- 
+
+### Swagger UI [3]
+
+<Image src={pet} width="120vw" size="contain" />
 
 ---
-## Swagger UI
 
-<Image src={pet_store} width="80vw" size="contain" />
+### Swagger UI [3]
+
+<Image src={pet_store} width="120vw" size="contain" />
 
 ---
 
-## Swagger Editor/Codegen
+### Swagger Editor/Codegen [4]
 
-<Image src={generators} width="80vw" size="contain" />
+<Image src={generators} width="120vw" size="contain" />
 
 ---
 
 # Como usar em uma api rails ?
 
+--- 
+
+# RSwag time!
+
 ---
+
+# Exemplo
+
+- Um endpoint GET
+- Listagem de livros de uma livraria
+- TDD
+
+--- 
+
+<CodeSurfer theme={github}>
+
+```json title="GET /books" 
+{
+  "name": "The Lord of the Rings",
+  "author": "J. R. R. Tolkien"
+}
+```
+
+</CodeSurfer>
+
+--- 
+
+<CodeSurfer theme={github}>
+
+```ruby 3:4,9:10 title="Instalar RSwag"
+  # ...
+  # Rswag libs
+  gem 'rswag-api'
+  gem 'rswag-ui'
+
+  group :development, :test do
+    # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+    gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+    gem 'rspec-rails', '~> 4.0.1' 
+    gem 'rswag-specs'
+  end
+  # ...
+```
+
+</CodeSurfer>
+
+---
+
+<CodeSurfer theme={github}>
+
+```bash title="Inicializar Rspec & Rswag"
+  rails generate rspec:install
+
+  rails g rswag:api:install
+  rails g rswag:ui:install
+  RAILS_ENV=test rails g rswag:specs:install
+```
+
+</CodeSurfer>
+
+---
+ 
+<CodeSurfer theme={github}>
+
+```bash title="Criar api"
+  rails new bookstore --api
+```
+
+</CodeSurfer>
+
+---
+ 
+<CodeSurfer theme={github}>
+
+```bash title="Gerar teste"
+  rails generate rspec:swagger BookController
+```
+
+</CodeSurfer>
+
+---
+ 
+<CodeSurfer theme={github}>
+
+```ruby title="GET teste"
+  require 'swagger_helper'
+
+  RSpec.describe 'book', type: :request do 
+
+  end
+``` 
+
+```diff 1 title="GET teste" subtitle="Helper criado pelo RSwag"
+
+``` 
+ 
+
+```ruby 3:4 title="GET teste" subtitle="Limpamos um pouco o código gerado."
+  require 'swagger_helper'
+
+  describe 'Books API' do
+
+  end
+```
+
+```ruby 4:5 title="GET teste" subtitle="Definimos nosso endpoint como um 'path'"
+  require 'swagger_helper'
+
+  describe 'Books API' do
+        path '/books' do
+
+        end
+  end
+```
+
+```ruby 5:6 title="GET teste" subtitle="Adicionamos o método."
+  require 'swagger_helper'
+
+  describe 'Books API' do
+        path '/books' do
+            get 'List all available books' do
+            end
+        end
+  end
+```
+
+```ruby 6 title="GET teste" subtitle="Adicionamos o tipo de retorno."
+  require 'swagger_helper'
+
+  describe 'Books API' do
+        path '/books' do
+            get 'List all available books' do
+              produces 'application/json'
+            end
+        end
+  end
+```
+
+```ruby 7:9 title="GET teste" subtitle="Adicionamos o código que esperamos da resposta."
+  require 'swagger_helper'
+
+  describe 'Books API' do
+        path '/books' do
+            get 'List all available books' do
+              produces 'application/json'
+              response '200', 'books listed' do
+                    run_test!
+              end
+            end
+        end
+  end
+``` 
+
+```ruby 8:13 title="GET teste" subtitle="Adicionamos corpo da resposta que esperamos."
+  require 'swagger_helper'
+
+  describe 'Books API' do
+        path '/books' do
+            get 'List all available books' do
+              produces 'application/json'
+              response '200', 'books listed' do
+                    schema type: :object,
+                    properties: {
+                        name: { type: :string },
+                        author: { type: :string }
+                    },
+                    required: ["name"]
+
+                    run_test!
+              end
+            end
+        end
+  end
+``` 
+
+</CodeSurfer> 
+
+---
+
+<CodeSurferColumns themes={[github, github]}>
+ 
+<Step> 
+
+```ruby 1
+  schema type: :object,
+    properties: {
+        name: { type: :string },
+        author: { type: :string }
+    },
+    required: ["name"]
+```
+
+```json 1,4
+{
+  "name": "The Lord of the Rings",
+  "author": "J. R. R. Tolkien"
+}
+```
+
+</Step> 
+
+<Step> 
+
+```ruby 3:4
+  schema type: :object,
+    properties: {
+        name: { type: :string },
+        author: { type: :string }
+    },
+    required: ["name"]
+```
+
+```json 2:3
+{
+  "name": "The Lord of the Rings",
+  "author": "J. R. R. Tolkien"
+}
+```
+
+</Step> 
+
+<Step> 
+
+```ruby 6
+  schema type: :object,
+    properties: {
+        name: { type: :string },
+        author: { type: :string }
+    },
+    required: ["name"]
+```
+
+```json 2
+{
+  "name": "The Lord of the Rings",
+  "author": "J. R. R. Tolkien"
+}
+```
+
+</Step> 
+
+</CodeSurferColumns>
+
+---
+ 
+<CodeSurfer theme={github}>
+
+```ruby title="GET teste"
+  require 'swagger_helper'
+
+  describe 'Books API' do
+        path '/books' do
+            get 'List all available books' do
+              produces 'application/json'
+              response '200', 'books listed' do
+                    schema type: :object,
+                    properties: {
+                        name: { type: :string },
+                        author: { type: :string }
+                    },
+                    required: ["name"]
+
+                    run_test!
+              end
+            end
+        end
+  end
+``` 
+</CodeSurfer>
+
+---
+
+<Image src={error_1} width="120vw" size="contain" />
+
+---
+
+<CodeSurfer theme={github}>
+
+```bash
+rails generate resource book name:string author:string --no-request-specs
+```  
+
+</CodeSurfer>
+
+---
+
+<Image src={error_3} width="120vw" size="contain" />
+
+---
+
+<CodeSurfer theme={github}>
+
+```ruby
+  class BooksController < ApplicationController
+          def index
+          end
+  end
+```  
+
+</CodeSurfer>
+ 
+
+---
+
+<Image src={error_4} width="120vw" size="contain" />
+
+---
+
+<CodeSurfer theme={github}>
+
+```ruby
+  class BooksController < ApplicationController
+        def index
+            render json: {}
+        end
+  end
+```  
+
+</CodeSurfer>  
+
+---
+
+<Image src={error_5} width="120vw" size="contain" />
+
+---
+
+<CodeSurfer theme={github}>
+
+```ruby
+  class BooksController < ApplicationController
+        def index
+            @books = Book.all()
+            render json: @books
+        end
+  end
+```  
+
+</CodeSurfer>  
+
+---
+
+<Image src={error_6} width="120vw" size="contain" />
+
+---
+
+<CodeSurfer theme={github}>
+
+```json title="O que estamos esperando" 
+{
+  "name": "The Lord of The Rings - The two Towers",
+  "author": "J. R. R. Tolkien"
+} 
+```  
+
+```json title="O que estamos retornando"
+[
+  {
+    "name": "The Lord of The Rings - The two Towers",
+    "author": "J. R. R. Tolkien"
+  },
+  {
+    "name": "Harry Potter and the Goblet of Fire",
+    "author": "J.K. Rowling"
+  }
+]
+```  
+
+</CodeSurfer>
+
+---
+
+<CodeSurfer theme={github}>  
+
+```ruby
+    schema type: :object,
+      properties: {
+          name: { type: :string },
+          author: { type: :string },
+      },
+      required: ["name"]
+```  
+
+```ruby
+    schema type: :array, items: {
+      type: :object,
+      properties: {
+              name: { type: :string },
+              author: { type: :string },
+          },
+      },
+      required: ["name"] 
+```
+
+</CodeSurfer>   
+
+---
+
+<Image src={success_1} width="120vw" size="contain" />
+
+---
+
+<CodeSurfer theme={github}>
+
+```yaml subtitle="Add fixtures."
+tlotr:
+  name: The Lord of The Rings - The two Towers
+  author: J. R. R. Tolkien
+
+hp:
+  name: Harry Potter and the Goblet of Fire
+  author: J.K. Rowling
+``` 
+
+```ruby 4 subtitle="Load fixtures."
+require 'swagger_helper'
+
+describe 'Books API' do  
+    fixtures :all
+
+    path '/books' do
+        get 'List all available books' do
+            produces 'application/json'
+            response '200', 'books listed' do 
+                schema type: :array, items: {
+                    type: :object,
+                    properties: {
+                            name: { type: :string },
+                            author: { type: :string },
+                        },
+                    },
+                    required: ["name"] 
+
+                run_test!
+            end
+        end
+    end
+end
+``` 
+
+</CodeSurfer>   
+
+---
+
+<Image src={success_2} width="120vw" size="contain" />
+
+---
+
+
+<CodeSurfer theme={github}>
+
+```bash 
+RAILS_ENV=test rails rswag
+```  
+
+</CodeSurfer>
+
+---
+
+<Image src={swagger_1} width="120vw" size="contain" />
+
+---
+
+<Image src={swagger_ui_0} width="120vw" size="contain" />
+
+---
+
+<CodeSurfer theme={github}>
+
+```ruby 
+  Book.create(name: "The Chronicles of Narnia", author: "C. S. Lewis")
+  Book.create(name: "The Creative Habit: Learn It and Use It For Life", author: "Twyla Tharp")
+  Book.create(name: "Sapiens: A Brief History of Humankind", author: "Yuval Noah Harari")
+```  
+
+</CodeSurfer>
+
+---
+
+<CodeSurfer theme={github}>
+
+```bash 
+rails db:seed
+```  
+
+</CodeSurfer>  
+
+---
+
+<Image src={swagger_ui_1} width="120vw" size="contain" />
+
+---
+
+## Hands on
+
+--- 
 
 # Bons exemplos
 
 ---
 
-### [Marvel](https://developer.marvel.com/docs)
+### Marvel [5]
 
-<Image src={marvel} width="80vw" size="contain" />
+<Image src={marvel} width="120vw" size="contain" /> 
 
----
-### [NYT](https://developer.nytimes.com/docs/articlesearch-product/1/overview)
+--- 
 
-<Image src={nyt} width="80vw" size="contain" />
+### NYT [6]
+<Image src={nyt} width="120vw" size="contain" /> 
+
 
 ---
 
 # Referências
 
+1. https://swagger.io/blog/api-strategy/benefits-of-openapi-api-development/
+2. https://help.sap.com/viewer/e63fe47de8f84a68b618ed689af9a28b/Cloud/en-US/672c9b46cc874f959bdfc5d9e5c85135.html
+3. https://petstore.swagger.io/
+4. https://editor.swagger.io/
+5. https://developer.marvel.com/docs
+6. https://developer.nytimes.com/docs/articlesearch-product/1/overview
+
+
 ---
 
-# Obrigado
+# Obrigado! 
+
+- [Tutorial](https://github.com/pernambucano/frevo-on-rails-rswag-tutorial)
+- [Essa apresentação](https://github.com/pernambucano/frevo-on-rails-rswag-tutorial-deck)
+
+---
